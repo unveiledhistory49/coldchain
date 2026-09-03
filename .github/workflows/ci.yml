@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install -e ".[dev,test]"
+      - name: Tests
+        run: pytest
+      - name: Ruff check
+        run: ruff check src tests scripts
+      - name: Ruff format check
+        run: ruff format --check src tests scripts
+      - name: Typecheck
+        run: mypy src/coldchain
+      - name: Audit
+        run: pip install pip-audit && pip-audit -r requirements.lock

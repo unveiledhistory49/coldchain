@@ -1,0 +1,30 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      COLDCHAIN_DATABASE_URL: sqlite:///./data/coldchain.db
+    volumes:
+      - coldchain-data:/app/data
+
+volumes:
+  coldchain-data:
+
+# Postgres swap (commented out):
+#
+#   api:
+#     environment:
+#       COLDCHAIN_DATABASE_URL: postgresql+psycopg2://coldchain:coldchain@db:5432/coldchain
+#   db:
+#     image: postgres:16
+#     environment:
+#       POSTGRES_USER: coldchain
+#       POSTGRES_PASSWORD: coldchain
+#       POSTGRES_DB: coldchain
+#     volumes:
+#       - pg-data:pgdata
+#
+# NOTE: switching to postgres requires adding a driver dependency
+# (psycopg2 is NOT in pyproject.toml — verified), e.g. add
+# "psycopg2-binary" to `dependencies`, re-run `make lock`, and rebuild.
